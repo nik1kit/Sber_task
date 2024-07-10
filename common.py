@@ -1,4 +1,0 @@
-PLAINTIFFS = []
-DEFENDANTS = []
-THIRDS = []
-OTHERS = []
