@@ -2,10 +2,13 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium_stealth import stealth
 from selenium import webdriver
 from openpyxl import load_workbook
 import requests
 from openpyxl.styles import Font, Alignment, Border, Side
+
+from selenium.webdriver.firefox.options import Options
 
 import time
 from datetime import datetime, timedelta
@@ -57,13 +60,15 @@ wb.save(fn)
 wb.close()
 
 options = webdriver.ChromeOptions()
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+options.add_argument(f"user-agent={user_agent}")
+
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
 options.add_experimental_option("useAutomationExtension", False)
 options.add_argument("--disable-blink-features=AutomationControlled")
-options.add_argument("--disable-blink-features=AutomationControlled")
-
-
 driver = webdriver.Chrome(options=options)
+
+
 URL = "https://kad.arbitr.ru"
 
 driver.maximize_window()
@@ -84,8 +89,15 @@ while current_date < end_date:
     data_input = driver.find_elements(
         By.CSS_SELECTOR, 'input[class="anyway_position_top g-ph"]'
     )
-    data_first_input = data_input[0]
-    data_second_input = data_input[1]
+    if data_input:
+        data_first_input = data_input[0]
+        data_second_input = data_input[1]
+    else:
+        data_input = driver.find_elements(
+            By.CSS_SELECTOR, 'input[class="anyway_position_top"]'
+        )
+        data_first_input = data_input[0]
+        data_second_input = data_input[1]
 
     data_first_input.click()
     time.sleep(3)
@@ -105,47 +117,45 @@ while current_date < end_date:
     data_second_input.send_keys(data_second)
     time.sleep(3)
     data_second_input.send_keys(Keys.RETURN)
-    time.sleep(5)
+    time.sleep(2)
 
     while True:
-        try:
-            time.sleep(1)
-            # Получение cookies из Selenium
-            cookies = driver.get_cookies()
-            session = requests.Session()
-            for cookie in cookies:
-                session.cookies.set(cookie['name'], cookie['value'])
+        # try:
+        time.sleep(5)
+        # Получение cookies из Selenium
+        cookies = driver.get_cookies()
+        session = requests.Session()
+        for cookie in cookies:
+            session.cookies.set(cookie["name"], cookie["value"])
 
-            session.headers.update({
-                'User-Agent': UserAgent().random
-            })
+        session.headers.update({"User-Agent": UserAgent().random})
 
-            page_source = driver.page_source
-            soup = BeautifulSoup(page_source, "lxml")
+        page_source = driver.page_source
+        soup = BeautifulSoup(page_source, "lxml")
 
-            scrap_inf(soup, session)
+        scrap_inf(soup, session)
 
-            load_data_to_excel(
-                PLAINTIFFS,
-                DEFENDANTS,
-                THIRDS,
-                OTHERS,
-                INN,
-                DATE,
-                NUMBERS_CASE,
-                ESSENCE_OF_CASE,
-                COURTS,
-                r"C:\Users\User\Desktop\Projects\pythonProject1\sber.xlsx",
-            )
+        load_data_to_excel(
+            PLAINTIFFS,
+            DEFENDANTS,
+            THIRDS,
+            OTHERS,
+            INN,
+            DATE,
+            NUMBERS_CASE,
+            ESSENCE_OF_CASE,
+            COURTS,
+            r"C:\Users\User\Desktop\Projects\pythonProject1\sber.xlsx",
+        )
 
-            time.sleep(6)
+        time.sleep(6)
 
-            next_button = driver.find_element(By.CSS_SELECTOR, 'li[class="rarr"]')
-            next_button.click()
-            time.sleep(6)
-        except:
-            print("Следующая страница недоступна, переходим к следующей.")
-            break
+        next_button = driver.find_element(By.CSS_SELECTOR, 'li[class="rarr"]')
+        next_button.click()
+        time.sleep(6)
+    # except:
+    #     print("Следующая страница недоступна, переходим к следующей.")
+    #     break
 
     current_date += timedelta(days=2)
 
