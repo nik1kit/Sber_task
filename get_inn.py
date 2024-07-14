@@ -9,14 +9,13 @@ def get_inn(html_code):
     for item in inn_plaintiff:
         inn_ = item.find("span", class_="js-rolloverHtml").find("div")
         if inn_ != None:
-            inn_plaintiff_dict.append(inn_.text.replace("\n", "").replace(" ", "")[4:])
+            inn_plaintiff_dict.append(inn_.text.strip()[5:])
         else:
             inn_plaintiff_dict.append(f"-")
-
     for item in inn_respondent:
         inn_ = item.find("span", class_="js-rolloverHtml").find("div")
         if inn_ != None:
-            inn_respondent_dict.append(inn_.text.replace("\n", "").replace(" ", "")[4:])
+            inn_respondent_dict.append(inn_.text.strip()[5:])
         else:
             inn_respondent_dict.append(f"-")
 
