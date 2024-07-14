@@ -6,6 +6,6 @@ def get_date(html_code):
     for item in all_date:
         date = item.find("span")
         if date != None:
-            DATE.append(date.text.replace("\n", "").replace(" ", ""))
+            DATE.append(date.text.strip())
         else:
             DATE.append(f"-")
