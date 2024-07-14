@@ -7,3 +7,4 @@ DATE = []  # дата дела
 NUMBERS_CASE = []  # номер дела
 ESSENCE_OF_CASE = []  # суть дела
 COURTS = []  # суд
+IS_PROXIES = False
