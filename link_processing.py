@@ -8,7 +8,7 @@ from common import PLAINTIFFS, DEFENDANTS, THIRDS, OTHERS
 
 def link_processing(links, session):
     for link in links:
-        time.sleep(1)
+        time.sleep(5)
         response = session.get(link)
         soup = BeautifulSoup(response.text, "lxml")
         # истец
