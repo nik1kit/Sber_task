@@ -12,13 +12,17 @@ def link_processing(links, session):
         response = session.get(link)
         soup = BeautifulSoup(response.text, "lxml")
         # истец
-        plaintiff = (
-            soup.find_all("td", class_="plaintiffs")[1].find("a").text.rstrip().lstrip()
-        )
-        PLAINTIFFS.append(plaintiff)
+        plaintiff = soup.find_all("td", class_="plaintiffs")[1].find("a")
+        if plaintiff != None:
+            PLAINTIFFS.append(plaintiff.text.rstrip().lstrip())
+        else:
+            PLAINTIFFS.append(f"-")
         # ответчик
         defendant = soup.find_all("td", class_="defendants")[1].find("a")
-        DEFENDANTS.append(defendant.text.rstrip().lstrip())
+        if defendant != None:
+            DEFENDANTS.append(defendant.text.rstrip().lstrip())
+        else:
+            DEFENDANTS.append(f"-")
         # третьи лица
         third = soup.find_all("td", class_="third")[1].find_all("a")
         thirds = []
