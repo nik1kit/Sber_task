@@ -120,42 +120,42 @@ while current_date < end_date:
     time.sleep(2)
 
     while True:
-        # try:
-        time.sleep(5)
-        # Получение cookies из Selenium
-        cookies = driver.get_cookies()
-        session = requests.Session()
-        for cookie in cookies:
-            session.cookies.set(cookie["name"], cookie["value"])
+        try:
+            time.sleep(5)
+            # Получение cookies из Selenium
+            cookies = driver.get_cookies()
+            session = requests.Session()
+            for cookie in cookies:
+                session.cookies.set(cookie["name"], cookie["value"])
 
-        session.headers.update({"User-Agent": UserAgent().random})
+            session.headers.update({"User-Agent": UserAgent().random})
 
-        page_source = driver.page_source
-        soup = BeautifulSoup(page_source, "lxml")
+            page_source = driver.page_source
+            soup = BeautifulSoup(page_source, "lxml")
 
-        scrap_inf(soup, session)
+            scrap_inf(soup, session)
 
-        load_data_to_excel(
-            PLAINTIFFS,
-            DEFENDANTS,
-            THIRDS,
-            OTHERS,
-            INN,
-            DATE,
-            NUMBERS_CASE,
-            ESSENCE_OF_CASE,
-            COURTS,
-            r"C:\Users\User\Desktop\Projects\pythonProject1\sber.xlsx",
-        )
+            load_data_to_excel(
+                PLAINTIFFS,
+                DEFENDANTS,
+                THIRDS,
+                OTHERS,
+                INN,
+                DATE,
+                NUMBERS_CASE,
+                ESSENCE_OF_CASE,
+                COURTS,
+                r"C:\Users\User\Desktop\Projects\pythonProject1\sber.xlsx",
+            )
 
-        time.sleep(6)
+            time.sleep(6)
 
-        next_button = driver.find_element(By.CSS_SELECTOR, 'li[class="rarr"]')
-        next_button.click()
-        time.sleep(6)
-    # except:
-    #     print("Следующая страница недоступна, переходим к следующей.")
-    #     break
+            next_button = driver.find_element(By.CSS_SELECTOR, 'li[class="rarr"]')
+            next_button.click()
+            time.sleep(6)
+        except:
+            print("Следующая страница недоступна, переходим к следующей.")
+            break
 
     current_date += timedelta(days=2)
 
