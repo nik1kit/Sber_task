@@ -6,6 +6,6 @@ def get_number_of_case(html_code):
     for item in numbers_case:
         number_case = item.find("a")
         if number_case != None:
-            NUMBERS_CASE.append(number_case.text.rstrip().lstrip())
+            NUMBERS_CASE.append(number_case.text.strip())
         else:
             NUMBERS_CASE.append(f"-")
