@@ -7,4 +7,4 @@ def get_courts(html_code):
         new_item = item.find_all("div")
         for i in new_item:
             if not i.get("class", []):
-                COURTS.append(i.get("title").rstrip().lstrip())
+                COURTS.append(i.get("title").strip())
