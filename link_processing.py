@@ -6,21 +6,10 @@ from selenium import webdriver
 import time
 from common import PLAINTIFFS, DEFENDANTS, THIRDS, OTHERS
 
-headers = {
-    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
-}
-
-if IS_PROXIES:
-    proxies = {
-        'https': "http://145.255.30.241:8088"
-    }
-else:
-    proxies = {}
-
 def link_processing(links, session):
     for link in links:
         time.sleep(3)
-        response = session.get(url=link, headers=headers, proxies=proxies)
+        response = session.get(url=link)
         time.sleep(3)
         soup = BeautifulSoup(response.text, "lxml")
         print(soup)
