@@ -1,8 +1,7 @@
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
+import openpyxl
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium_stealth import stealth
 from selenium import webdriver
 from openpyxl import load_workbook
 import requests
@@ -27,9 +26,10 @@ from common import (
 )
 from load_data_to_exel import load_data_to_excel
 
-fn = "sber.xlsx"
-wb = load_workbook(fn)
-ws = wb["data"]
+wb = openpyxl.Workbook()
+ws = wb.create_sheet(title="data")
+default_sheet = wb["Sheet"]
+wb.remove(default_sheet)
 
 # очистка листа
 for row in ws.iter_rows(min_row=1, max_row=ws.max_row, max_col=ws.max_column):
@@ -57,10 +57,11 @@ for col_num, header in enumerate(headers, 1):
         bottom=Side(style="thick"),
     )
 
-wb.save(fn)
+wb.save("sber.xlsx")
 wb.close()
 
-IS_PROXIES = True # Меняем на False, если нет бана по ip
+
+IS_PROXIES = False # Меняем на False, если нет бана по ip
 
 options = webdriver.ChromeOptions()
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
