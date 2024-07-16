@@ -6,19 +6,21 @@ from selenium import webdriver
 import time
 from common import PLAINTIFFS, DEFENDANTS, THIRDS, OTHERS
 
-def link_processing(links, session):
+def link_processing(links, driver):
     for link in links:
-        time.sleep(3)
-        response = session.get(url=link)
-        time.sleep(3)
-        soup = BeautifulSoup(response.text, "lxml")
-        print(soup)
+        # Открывем новую вкладку
+        driver.execute_script("window.open('');")
+        driver.switch_to.window(driver.window_handles[-1])
+        driver.get(link)
+        time.sleep(5)
+        response = driver.page_source
+        soup = BeautifulSoup(response, "lxml")
         # истец
-        plaintiff = soup.find_all("td", class_="plaintiffs")[1]
+        plaintiff = soup.find("td", class_="plaintiffs first")
         if plaintiff != None:
             new_plaintiff = plaintiff.find("a")
             if new_plaintiff != None:
-                PLAINTIFFS.append(plaintiff.text.rstrip().lstrip())
+                PLAINTIFFS.append(new_plaintiff.text.strip())
             else:
                 PLAINTIFFS.append(f"-")
         else:
@@ -28,7 +30,7 @@ def link_processing(links, session):
         if defendant != None:
             new_defendant = defendant.find("a")
             if new_defendant != None:
-                DEFENDANTS.append(defendant.text.rstrip().lstrip())
+                DEFENDANTS.append(new_defendant.text.rstrip().lstrip())
             else:
                 DEFENDANTS.append(f"-")
         else:
@@ -55,5 +57,7 @@ def link_processing(links, session):
         else:
             others.append(f"-")
         OTHERS.append(others)
-
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
+        time.sleep(3)
         essence_of_case(soup)
