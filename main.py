@@ -73,17 +73,6 @@ options.add_experimental_option("useAutomationExtension", False)
 options.add_argument("--disable-blink-features=AutomationControlled")
 driver = webdriver.Chrome(options=options)
 
-headers_session = {
-    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
-}
-
-if IS_PROXIES:
-    proxies = {
-        'https': "http://145.255.30.241:8088"
-    }
-else:
-    proxies = {}
-
 
 URL = "https://kad.arbitr.ru"
 
@@ -138,42 +127,35 @@ while current_date < end_date:
     time.sleep(2)
 
     while True:
-        # try:
-            time.sleep(5)
-            # Получение cookies из Selenium
-            cookies = driver.get_cookies()
-            session = requests.Session()
-            for cookie in cookies:
-                session.cookies.set(cookie["name"], cookie["value"])
-
-            session.headers.update(headers_session)
-            session.proxies.update(proxies)
-
-            page_source = driver.page_source
-            soup = BeautifulSoup(page_source, "lxml")
-
-            scrap_inf(soup, session, driver)
-
-            load_data_to_excel(
-                PLAINTIFFS,
-                DEFENDANTS,
-                THIRDS,
-                OTHERS,
-                INN,
-                DATE,
-                NUMBERS_CASE,
-                ESSENCE_OF_CASE,
-                COURTS,
-                r"C:\Users\User\Desktop\Projects\pythonProject1\sber.xlsx",
-            )
-
-            time.sleep(6)
-            next_button = driver.find_element(By.CSS_SELECTOR, 'li[class="rarr"]')
-            next_button.click()
-            time.sleep(6)
-        # except:
-        #     print("Следующая страница недоступна, переходим к следующей.")
-        #     break
+            try:
+                time.sleep(5)
+    
+    
+                page_source = driver.page_source
+                soup = BeautifulSoup(page_source, "lxml")
+    
+                scrap_inf(soup, driver)
+    
+                load_data_to_excel(
+                    PLAINTIFFS,
+                    DEFENDANTS,
+                    THIRDS,
+                    OTHERS,
+                    INN,
+                    DATE,
+                    NUMBERS_CASE,
+                    ESSENCE_OF_CASE,
+                    COURTS,
+                    r"C:\Users\User\Desktop\Projects\pythonProject1\sber.xlsx",
+                )
+    
+                time.sleep(6)
+                next_button = driver.find_element(By.CSS_SELECTOR, 'li[class="rarr"]')
+                next_button.click()
+                time.sleep(6)
+            except:
+                print("Следующая страница недоступна, переходим к следующей.")
+                break
 
 
 driver.quit()
