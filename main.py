@@ -152,7 +152,7 @@ while current_date < end_date:
             page_source = driver.page_source
             soup = BeautifulSoup(page_source, "lxml")
 
-            scrap_inf(soup, session)
+            scrap_inf(soup, session, driver)
 
             load_data_to_excel(
                 PLAINTIFFS,
@@ -168,7 +168,6 @@ while current_date < end_date:
             )
 
             time.sleep(6)
-            print(INN)
             next_button = driver.find_element(By.CSS_SELECTOR, 'li[class="rarr"]')
             next_button.click()
             time.sleep(6)
